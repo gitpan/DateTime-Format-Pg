@@ -1,5 +1,10 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.08  Wed Mar 16 16:00:00 2005
+	- fixed parse_time (John Siracusa, bug #8516)
+	- format_interval was missing (CEESHEK, bug #11898)
+	- format_duration did not work as a class method (CEESHEK, bug #11898)
+
 0.07  Sun Aug 08 00:00:00 2004
 	- fixed handling of numerical timezones without minutes
 	  (reported by Daisuke Maki)
@@ -26,4 +31,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes,v 1.6 2004/06/20 08:50:29 cfaerber Exp $
+$Id: Changes,v 1.7 2005/03/16 16:13:18 cfaerber Exp $

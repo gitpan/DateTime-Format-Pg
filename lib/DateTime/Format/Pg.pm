@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.12 2004/08/08 14:51:38 cfaerber Exp $
+# $Id: Pg.pm,v 1.13 2005/03/16 16:13:18 cfaerber Exp $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.07';
+$VERSION = '0.08';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -190,10 +190,10 @@ my $pg_dateonly_german =
 #
 my $pg_timeonly =
 {
-  regex		=> qr/^(\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?)([-\+](?:[\d:]+))?$/,
-  params 	=> [ qw( hour    minute   fractional_second time_zone) ],
+  regex		=> qr/^(\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? *([-\+][\d:]+)?$/,
+  params 	=> [ qw( hour    minute  second nanosecond  time_zone) ],
   extra		=> { year => '1970' },
-  postprocess	=> [ \&_fix_timezone, \&_fix_seconds ],
+  postprocess	=> [ \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # Timestamps (with/without time zone)
@@ -291,35 +291,34 @@ sub _fix_month_names {
 sub _fix_timezone {
   my %args = @_;
   my %param = $args{'args'} ? (@{$args{'args'}}) : ();
-
+ 
   if($param{'_force_tz'}) {
     $args{'parsed'}->{'time_zone'} = $param{'_force_tz'};
   }
 
-  # For very early and late dates, PostgreSQL always returns times in
-  # UTC and does not tell us that it did so.
-  #
-  elsif(
-    (!$args{'parsed'}->{'time_zone'}) &&
-    ( $args{'parsed'}->{'year'} < 1901
+  elsif(!defined($args{'parsed'}->{'time_zone'})) {
+    # For very early and late dates, PostgreSQL always returns times in
+    # UTC and does not tell us that it did so.
+    #
+    if ( $args{'parsed'}->{'year'} < 1901
     || ( $args{'parsed'}->{'year'} == 1901 && ($args{'parsed'}->{'month'} < 12 || $args{'parsed'}->{'day'} < 14) )
     ||   $args{'parsed'}->{'year'} > 2038
     || ( $args{'parsed'}->{'year'} == 2038 && ($args{'parsed'}->{'month'} > 01 || $args{'parsed'}->{'day'} > 18) )
-    )
-  ) {
+    ) {
     $args{'parsed'}->{'time_zone'} = DateTime::TimeZone::UTC->new();
-  }
+    }
 
-  # DT->new() does not like undef time_zone params, which are generated
-  # by the regexps
-  #
-  elsif(!$args{'parsed'}->{'time_zone'}) {
-    delete $args{'parsed'}->{'time_zone'};
+    # DT->new() does not like undef time_zone params, which are generated
+    # by the regexps
+    #
+    else {
+      delete $args{'parsed'}->{'time_zone'};
+    }
   }
 
   # Numerical time zone
   #
-  elsif($args{'parsed'}->{'time_zone'} =~ m/^[-\+][0-9]+(:[0-9]+)?$/) {
+  elsif($args{'parsed'}->{'time_zone'} =~ m/^[-\+]\d+(:\d+)?$/) {
     $args{'parsed'}->{'time_zone'} .= ':00' unless $1;
   }
   
@@ -330,7 +329,7 @@ sub _fix_timezone {
     my $stz = $args{'self'}->_server_tz($args{'args'} ? @{$args{'args'}} : ());
     $args{'parsed'}->{'time_zone'} = $stz || 'floating';
   }
-
+  
   return 1;
 }
 
@@ -815,6 +814,7 @@ as input for the INTERVAL type.
 =cut
 
 sub format_duration {
+  shift if UNIVERSAL::isa($_[0], __PACKAGE__) || $_[0] eq __PACKAGE__;
   my($du,%param) = @_;
   croak 'DateTime::Duration object expected' unless UNIVERSAL::isa($du,'DateTime::Duration');
 
@@ -835,9 +835,13 @@ sub format_duration {
   return $output;
 }
 
+*format_interval = \&format_duration;
+
 =back
 
 =cut
+
+
 
 1;
 

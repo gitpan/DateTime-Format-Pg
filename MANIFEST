@@ -9,7 +9,9 @@ t/2new-param.t
 t/format_date.t
 t/format_datetime.t
 t/parse_date.t
+t/parse_time.t
 t/parse_datetime.t
 t/parse_datetime2.t
 t/parse_interval.t
 t/tz_1901_2038.t
+META.yml                                 Module meta-data (added by MakeMaker)
