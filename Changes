@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.05  Wed Jul 16 00:00:00 2003
+	- updated for DateTime 0.13 (use nanoseconds instead of
+	  fractional_seconds)
+
 0.04  Fri May 30 00:00:00 2003
 	- runs more happily while warnings are enabled (koschei)
 	- updated for DT::Format::Builder 0.72 (koschei/cfaerber)
@@ -15,4 +19,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes,v 1.4 2003/05/30 14:07:11 cfaerber Exp $
+$Id: Changes,v 1.5 2003/07/16 13:42:35 cfaerber Exp $

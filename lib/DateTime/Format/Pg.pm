@@ -1,18 +1,18 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.6 2003/05/30 14:14:23 cfaerber Exp $
+# $Id: Pg.pm,v 1.10 2003/07/16 13:46:20 cfaerber Exp $
 
 use strict;
 use vars qw ($VERSION);
 
 use Carp;
-use DateTime 0.10;
+use DateTime 0.13;
 use DateTime::Duration;
 use DateTime::Format::Builder 0.72;
 use DateTime::TimeZone 0.05;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-our $VERSION = '0.04';
+$VERSION = '0.05';
 
 $VERSION = eval $VERSION;
 
@@ -192,7 +192,7 @@ my $pg_timeonly =
   regex		=> qr/^(\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?)([-\+](?:[\d:]+))?$/,
   params 	=> [ qw( hour    minute   fractional_second time_zone) ],
   extra		=> { year => '1970' },
-  postprocess	=> [ \&_fix_timezone, ],
+  postprocess	=> [ \&_fix_timezone, \&_fix_seconds ],
 };
 
 # Timestamps (with/without time zone)
@@ -205,27 +205,27 @@ my $pg_timeonly =
 #
 my $pg_datetime_iso =
 {
-  regex		=> qr/^(\d{4,})-(\d{2,})-(\d{2,}) (\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?)( BC)? *([-\+][\d:]+)?$/,
-  params 	=> [ qw( year    month    day      hour     minute   fractional_second era     time_zone) ],
-  postprocess 	=> [ \&_fix_era, \&_fix_timezone ],
+  regex		=> qr/^(\d{4,})-(\d{2,})-(\d{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *([-\+][\d:]+)?$/,
+  params 	=> [ qw( year    month    day      hour     minute  second nanosecond era    time_zone) ],
+  postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # Fri 18 Apr 17:20:24.373942 2003 CEST (USE_POSTGRES_DATES, EuroDates)
 #
 my $pg_datetime_pg_eu =
 {
-  regex		=> qr/^\S{3,} (\d{2,}) (\S{3,}) (\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?) (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw(       day      month    hour     minute   fractional_second  year    era     time_zone) ],
-  postprocess 	=> [ \&_fix_era, \&_fix_timezone ],
+  regex		=> qr/^\S{3,} (\d{2,}) (\S{3,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
+  params 	=> [ qw(       day      month    hour     minute  second nanosecond year    era     time_zone) ],
+  postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # Fri Apr 18 17:20:24.373942 2003 CEST (USE_POSTGRES_DATES, !EuroDates)
 #
 my $pg_datetime_pg_us =
 {
-  regex		=> qr/^\S{3,} (\S{3,}) (\s{2,}) (\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?) (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw(       month    day      hour     minute   fractional_second  year    era     time_zone) ],
-  postprocess 	=> [ \&_fix_era, \&_fix_month_names, \&_fix_timezone ],
+  regex		=> qr/^\S{3,} (\S{3,}) (\s{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
+  params 	=> [ qw(       month    day      hour     minute  second nanosecond year    era     time_zone) ],
+  postprocess 	=> [ \&_fix_era, \&_fix_month_names, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # 18/04/2003 17:20:24.373942 CEST (USE_SQL_DATES, EuroDates)
@@ -233,18 +233,18 @@ my $pg_datetime_pg_us =
 #
 my $pg_datetime_sql =
 {
-  regex		=> qr/^(\d{2,})\/(\d{2,})\/(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?)( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw( month    day       year    hour     minute   fractional_second era      time_zone) ],
-  postprocess 	=> [ \&_fix_era, \&_fix_eu, \&_fix_timezone ],
+  regex		=> qr/^(\d{2,})\/(\d{2,})\/(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
+  params 	=> [ qw( month    day       year    hour     minute   second nanosecond era      time_zone) ],
+  postprocess 	=> [ \&_fix_era, \&_fix_eu, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # 18.04.2003 17:20:24.373942 CEST (USE_GERMAN_DATES)
 #
 my $pg_datetime_german =
 {
-  regex		=> qr/^(\d{2,})\.(\d{2,})\.(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,}(?:\.\d+)?)( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw( day      month     year    hour     minute   fractional_second era     time_zone) ],
-  postprocess 	=> [ \&_fix_era, \&_fix_timezone ],
+  regex		=> qr/^(\d{2,})\.(\d{2,})\.(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
+  params 	=> [ qw( day      month     year    hour     minute   second nanosecond era    time_zone) ],
+  postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
 # Helper functions
@@ -293,7 +293,6 @@ sub _fix_timezone {
 
   if($param{'_force_tz'}) {
     $args{'parsed'}->{'time_zone'} = $param{'_force_tz'};
-    print STDERR "Forced time zone.";
   }
 
   # For very early and late dates, PostgreSQL always returns times in
@@ -324,6 +323,18 @@ sub _fix_timezone {
     $args{'parsed'}->{'time_zone'} = $stz || 'floating';
   }
 
+  return 1;
+}
+
+# Fix fractional seconds
+#
+sub _fix_nanosecond {
+  my %args = @_;
+  if(defined $args{'parsed'}->{'nanosecond'}) {
+    $args{'parsed'}->{'nanosecond'} *= 1.0E9;
+  } else {
+    delete $args{'parsed'}->{'nanosecond'}
+  };
   return 1;
 }
 
