@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.04  Fri May 30 00:00:00 2003
+	- runs more happily while warnings are enabled (koschei)
+	- updated for DT::Format::Builder 0.72 (koschei/cfaerber)
+
 0.03  Sun May 11 00:00:00 2003
 	- support for BC dates
 	- automatic tests (not complete)
@@ -11,3 +15,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
+$Id: Changes,v 1.4 2003/05/30 14:07:11 cfaerber Exp $

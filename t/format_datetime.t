@@ -1,3 +1,4 @@
+# $Id: format_datetime.t,v 1.2 2003/05/30 14:04:49 cfaerber Exp $
 use Test::More tests => 6;
 use DateTime 0.10;
 use DateTime::TimeZone;

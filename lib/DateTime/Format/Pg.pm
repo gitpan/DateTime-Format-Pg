@@ -1,4 +1,5 @@
 package DateTime::Format::Pg;
+# $Id: Pg.pm,v 1.6 2003/05/30 14:14:23 cfaerber Exp $
 
 use strict;
 use vars qw ($VERSION);
@@ -6,17 +7,12 @@ use vars qw ($VERSION);
 use Carp;
 use DateTime 0.10;
 use DateTime::Duration;
-use DateTime::Format::Builder 0.63;
+use DateTime::Format::Builder 0.72;
 use DateTime::TimeZone 0.05;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-our $VERSION = '0.03';
-our @ISA;
-
-BEGIN {
-  @ISA = ('DateTime::Format::Builder')
-};
+our $VERSION = '0.04';
 
 $VERSION = eval $VERSION;
 
@@ -31,7 +27,7 @@ DateTime::Format::Pg - Parse and format PostgreSQL dates and times
   my $dt = DateTime::Format::Pg->parse_datetime( '2003-01-16 23:12:01' );
 
   # 2003-01-16T23:12:01+0200
-  DateTime::Format::PostgreSQL->format_datetime($dt);
+  DateTime::Format::Pg->format_datetime($dt);
 
 =head1 DESCRIPTION
 
@@ -95,8 +91,8 @@ sub _add_param
   {
     if($_ eq 'european') {
       $$to{'_european'} = $param{$_};
-    } elsif($_ eq '') {
-      $$to{'_server_tz'} = (undef,'server_tz' => $param{$_});
+    } elsif($_ eq 'server_tz') {
+      $$to{'_server_tz'} = $param{$_};
     } else {
       croak("Unknown option $_." );
     }
@@ -159,7 +155,7 @@ my $pg_dateonly_iso =
 {
   regex		=> qr/^(\d{4,})-(\d{2,})-(\d{2,})( BC)?$/,
   params 	=> [ qw( year    month    day     era ) ],
-  postprocess	=> \&_fix_era
+  postprocess	=> \&_fix_era,
 };
 
 # 18/04/2003 (USE_SQL_DATES, EuroDates)
@@ -257,10 +253,10 @@ my $pg_datetime_german =
 #
 sub _fix_era {
   my %args = @_;
-  if ($args{'parsed'}->{'era'} =~ m/BC/) {
+  my $era = (delete $args{'parsed'}->{'era'}) || '';
+  if ($era =~ m/BC/) {
     $args{'parsed'}->{'year'} = 1-$args{'parsed'}->{'year'}
   }
-  delete $args{'parsed'}->{'era'};
   return 1;
 }
 
@@ -268,7 +264,7 @@ sub _fix_era {
 #
 sub _fix_eu {
   my %args = @_;
-  if($args{'self'}->european(@{$args{'param'}}) ) {
+  if($args{'self'}->european(@{$args{'args'}}) ) {
     my $save = $args{'parsed'}->{'month'};
     $args{'parsed'}->{'month'} = $args{'parsed'}->{'day'};
     $args{'parsed'}->{'day'} = $save;
@@ -293,7 +289,7 @@ sub _fix_month_names {
 #
 sub _fix_timezone {
   my %args = @_;
-  my %param = $args{'param'} ? (@{$args{'param'}}) : ();
+  my %param = $args{'args'} ? (@{$args{'args'}}) : ();
 
   if($param{'_force_tz'}) {
     $args{'parsed'}->{'time_zone'} = $param{'_force_tz'};
@@ -324,7 +320,7 @@ sub _fix_timezone {
   # Non-numerical time zone returned, which can be ambiguous :(
   #
   elsif($args{'parsed'}->{'time_zone'} !~ m/^[-\+][0-9]+(:[0-9]+)?$/) {
-    my $stz = $args{'self'}->_server_tz($args{'param'} ? @{$args{'param'}} : ());
+    my $stz = $args{'self'}->_server_tz($args{'args'} ? @{$args{'args'}} : ());
     $args{'parsed'}->{'time_zone'} = $stz || 'floating';
   }
 
@@ -335,7 +331,6 @@ sub _fix_timezone {
 #
 DateTime::Format::Builder->create_class
 (
-  constructor => undef,
   parsers =>
   {
     parse_date		=> [ $pg_dateonly_iso, $pg_dateonly_sql,
@@ -537,13 +532,20 @@ sub parse_duration {
     # PostgreSQL might return mixed signs, e.g. '1 mon -1day'.
     my $du = DateTime::Duration->new();
 
+    $sec ||= 0;
+    $frc ||= 0;
+    $min ||= 0;
+    $day ||= 0;
+    $mon ||= 0;
+
     # DT::Duration only stores years, days, months, seconds (and
     # nanoseconds)
-    $mon += 12 * $year;
-    $min += 60 * $hour;
+    $mon += 12 * $year if $year;
+    $min += 60 * $hour if $hour;
 
     # HH:MM:SS.FFFF share a single sign
     #
+    $sgn ||= '+';
     $sgn = $sgn eq '-' ? -1 : 1;
     $min *= $sgn;
     $sec *= $sgn;
@@ -585,15 +587,18 @@ sub parse_duration {
 
     # DT::Duration only stores years, days, months, seconds (and
     # nanoseconds)
-    $mon += 12 * $year;
-    $min += 60 * $hour;
+    $mon += 12 * $year if $year;
+    $min += 60 * $hour if $hour;
 
     # Fractional seconds. Pg can have a maximum precision of 10 decimal
     # digits, so it's safe to just use floating point arithmetic
     # (provided we have at least double precision).
     #
-    $frc = $sgn.$frc;
-    $frc *= DateTime::Duration::MAX_NANOSECONDS;
+    if ($frc) {
+      $frc = $sgn.$frc if $sgn;
+      $frc *= DateTime::Duration::MAX_NANOSECONDS;
+    }
+    $frc ||= 0;
 
     # One add per sign (PostgreSQL stores, months, days and time with
     # one sign each)
@@ -828,6 +833,10 @@ sub format_duration {
   return $output;
 }
 
+=back
+
+=cut
+
 1;
 
 __END__
@@ -855,10 +864,10 @@ not send numerical time zones for the TIMESTAMPTZ (or TIMESTAMP WITH
 TIME ZONE) type. Unfortunatly, the time zone names used instead can be
 ambiguous: For example, 'EST' can mean -0500, +1000, or +1100.
 
-Therefore, this parser class currently requires that the 'server_tz'
-parameter is set and agrees with the PostgreSQL server's time zone
-setting and that the PostgreSQL server's and the local operating system
-agree on the interpretation of these time zones. If the two systems 
+You must set the 'server_tz' variable to a time zone that is identical to that
+of the PostgreSQL server. If the server is set to a different time zone (or the
+underlying operating system interprets the time zone differently), the parser
+will return wrong times.
 
 You can avoid such problems by setting the server's time zone to UTC
 using the SET TIME ZONE 'UTC' command and setting 'server_tz' parameter
@@ -893,12 +902,10 @@ indication of the sign with intervals. This means that '1 month ago' and
 This problem can only be avoided by using the 'ISO' or 'PostgreSQL'
 output format.
 
-=cut
+=head1 SUPPORT
 
-#	=head1 SUPPORT
-#
-#	Support for this module is provided via the datetime@perl.org email
-#	list.  See http://lists.perl.org/ for more details.
+Support for this module is provided via the datetime@perl.org email
+list.  See http://lists.perl.org/ for more details.
 
 =head1 AUTHOR
 
@@ -914,12 +921,10 @@ the same terms as Perl itself.
 The full text of the license can be found in the LICENSE file included with
 this module.
 
-=cut
+=head1 SEE ALSO
 
-#	=head1 SEE ALSO
-#
-#	datetime@perl.org mailing list
-#
-#	http://datetime.perl.org/
+datetime@perl.org mailing list
+
+http://datetime.perl.org/
 
 =cut
