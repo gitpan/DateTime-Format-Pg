@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.07  Sun Aug 08 00:00:00 2004
+	- fixed handling of numerical timezones without minutes
+	  (reported by Daisuke Maki)
+
 0.06  Sun Jun 20 00:00:00 2004
         - use nanoseconds when formatting times (bug #6557)
 
