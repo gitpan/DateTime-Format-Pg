@@ -1,5 +1,5 @@
-# $Id: format_datetime.t,v 1.2 2003/05/30 14:04:49 cfaerber Exp $
-use Test::More tests => 6;
+# $Id: format_datetime.t,v 1.3 2004/06/20 08:46:05 cfaerber Exp $
+use Test::More tests => 7;
 use DateTime 0.10;
 use DateTime::TimeZone;
 use DateTime::Format::Pg 0.02;
@@ -58,6 +58,17 @@ use DateTime::Format::Pg 0.02;
     minute    => 0,
     second    => 0,
     time_zone => '+01:00' },
+
+  '0001-12-24 02:00:00.000001234+0100 BC' => {
+    year      => 0,
+    month     => 12,
+    day       => 24,
+    hour      => 2,
+    minute    => 0,
+    nanosecond=> 1234,
+    second    => 0,
+    time_zone => '+01:00' },
+
 );
 
 foreach my $result (keys %tests) {

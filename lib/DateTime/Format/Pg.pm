@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.10 2003/07/16 13:46:20 cfaerber Exp $
+# $Id: Pg.pm,v 1.11 2004/06/20 08:46:04 cfaerber Exp $
 
 use strict;
 use vars qw ($VERSION);
@@ -8,13 +8,14 @@ use Carp;
 use DateTime 0.13;
 use DateTime::Duration;
 use DateTime::Format::Builder 0.72;
-use DateTime::TimeZone 0.05;
+use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.05';
-
+$VERSION = '0.06';
 $VERSION = eval $VERSION;
+
+our @ISA = ('DateTime::Format::Builder');
 
 =head1 NAME
 
@@ -428,9 +429,7 @@ If given an improperly formatted string, this method may die.
 #   *** created autmatically ***
 # }
 
-sub parse_timestamp_with_time_zone {
-  return parse_timestamptz(@_);
-}
+*parse_timestamp_with_time_zone = \&parse_timestamptz;
 
 =item * parse_timestamp($string,...)
 
@@ -447,12 +446,10 @@ If given an improperly formatted string, this method may die.
 =cut
 
 sub parse_timestamp {
-  return parse_timestamptz(@_,'_force_tz' => DateTime::TimeZone::Floating->new());
+  parse_timestamptz(@_,'_force_tz' => DateTime::TimeZone::Floating->new());
 }
 
-sub parse_timestamp_without_time_zone {
-  return parse_timestamp(@_);
-}
+*parse_timestamp_without_time_zone = \&parse_timestamp;
 
 =item * parse_timetz($string,...)
 
@@ -477,9 +474,7 @@ If given an improperly formatted string, this method may die.
 #   *** created autmatically ***
 # }
 
-sub parse_time_with_time_zone {
-  return parse_timetz(@_);
-}
+*parse_time_with_time_zone = \&parse_timetz;
 
 =item * parse_time($string,...)
 
@@ -498,12 +493,10 @@ If given an improperly formatted string, this method may die.
 =cut
 
 sub parse_time {
-  return parse_timetz(@_,'_force_tz' => 'floating');
+  parse_timetz(@_,'_force_tz' => 'floating');
 }
 
-sub parse_time_without_time_zone {
-  return parse_time(@_);
-}
+*parse_time_without_time_zone = \&parse_time;
 
 =item * parse_date($string,...)
 
@@ -636,9 +629,7 @@ sub parse_duration {
   croak 'Invalid input format';
 };
 
-sub parse_interval {
-  return parse_duration(@_);
-};
+*parse_interval = \&parse_duration;
 
 =back
 
@@ -665,10 +656,7 @@ used.
 
 =cut
 
-sub format_datetime
-{
-  return format_timestamptz(@_);
-}
+*format_datetime = \&format_timestamptz;
 
 =item * format_time($datetime,...)
 
@@ -680,16 +668,19 @@ will contain the local time of the C<DateTime> object and no time zone.
 
 =cut
 
+sub _format_fractional
+{
+  my $ns = shift->nanosecond;
+  return $ns ? sprintf(".%09d", $ns) : ''
+}
+
 sub format_time
 {
   my ($self,$dt,%param) = @_;
-  return $dt->hms(':');
+  return $dt->hms(':')._format_fractional($dt);
 }
 
-sub format_time_without_time_zone
-{
-  return format_time(@_);
-}
+*format_time_without_time_zone = \&format_time;
 
 =item * format_timetz($datetime)
 
@@ -709,7 +700,7 @@ result in the server's time zone being used.
 
 sub _format_time_zone
 {
-  my ($self,$dt) = @_;
+  my $dt = shift;
   return '' if $dt->time_zone->is_floating;
   return &DateTime::TimeZone::offset_as_string($dt->offset);
 }
@@ -717,13 +708,10 @@ sub _format_time_zone
 sub format_timetz
 {
   my ($self,$dt) = @_;
-  return $dt->hms(':').($self->_format_time_zone($dt));
+  return $dt->hms(':')._format_fractional($dt)._format_time_zone($dt);
 }
 
-sub format_time_with_time_zone
-{
-  return format_timetz(@_);
-}
+*format_time_with_time_zone = \&format_timetz;
 
 =item * format_date($datetime)
 
@@ -765,16 +753,13 @@ sub format_timestamp
       1-$dt->year(),
       $dt->month(),
       $dt->day(),
-      $dt->hms(':'));
+      $dt->hms(':')._format_fractional($dt));
   } else {
-    return $dt->ymd('-').' '.$dt->hms(':');
+    return $dt->ymd('-').' '.$dt->hms(':')._format_fractional($dt);
   }
 }
 
-sub format_timestamp_without_time_zone
-{
-  return format_timestamp(@_);
-}
+*format_timestamp_without_time_zone = \&format_timestamp;
 
 =item * format_timestamptz($datetime)
 
@@ -801,18 +786,17 @@ sub format_timestamptz
       $dt->day()).
       ' '.
       $dt->hms(':').
-      ($self->_format_time_zone($dt)).
+      _format_fractional($dt).
+      _format_time_zone($dt).
       ' BC';
   } else {
     return $dt->ymd('-').' '.$dt->hms(':').
-      ($self->_format_time_zone($dt));
+      _format_fractional($dt).
+      _format_time_zone($dt);
   }
 }
 
-sub format_timestamp_with_time_zone
-{
-  return format_timestamptz(@_);
-}
+*format_timestamp_with_time_zone = \&format_timestamptz;
 
 =item * format_duration($du)
 
