@@ -1,0 +1,13 @@
+Revision history for Perl extension DateTime::Format::Pg.
+
+0.03  Sun May 11 00:00:00 2003
+	- support for BC dates
+	- automatic tests (not complete)
+	- complete rewrite of time zone handling
+	- added methods to parse/format intervals
+	- make use of DT::Format::Builder's new features in 0.70
+
+0.01  Sat Apr 19 00:00:00 2003
+	- original version; created by h2xs 1.22 with options
+		-X -n DateTime::Format::Pg
+
