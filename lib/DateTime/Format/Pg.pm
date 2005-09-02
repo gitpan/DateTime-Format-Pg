@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.13 2005/03/16 16:13:18 cfaerber Exp $
+# $Id: Pg.pm,v 1.14 2005/09/02 21:38:59 lestrrat Exp $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.08';
+$VERSION = '0.09';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -144,6 +144,26 @@ sub clone
   croak('Calling object method as class method!') unless ref $self;
   return $self->new();
 }
+
+sub _create_infinity
+{
+    my $self = shift;
+    my %p    = @_;
+
+    if ($p{sign}) {
+        return DateTime::Infinite::Past->new;
+    } else {
+        return DateTime::Infinite::Future->new;
+    }
+}
+
+# infinite datetimes
+my $pg_infinity =
+{
+  regex => qr/^(-)?infinity$/,
+  params => [ qw(sign) ],
+  constructor => \&_create_infinity,
+};
 
 # Dates (without time zone)
 #
@@ -356,12 +376,12 @@ DateTime::Format::Builder->create_class
     parse_timetz	=> [ $pg_timeonly, ],
     parse_timestamptz	=> [ $pg_datetime_iso, $pg_datetime_pg_eu,
                              $pg_datetime_pg_us, $pg_datetime_sql,
-			     $pg_datetime_german, ],
+			     $pg_datetime_german, $pg_infinity ],
     parse_datetime	=> [ $pg_datetime_iso, $pg_datetime_pg_eu,
 			     $pg_datetime_pg_us, $pg_datetime_sql,
 			     $pg_datetime_german,
 			     $pg_dateonly_iso, $pg_dateonly_german,
-			     $pg_dateonly_sql, $pg_timeonly, ],
+			     $pg_dateonly_sql, $pg_timeonly, $pg_infinity],
   }
 );
 
@@ -754,7 +774,9 @@ no time zone.
 sub format_timestamp
 {
   my ($self,$dt,%param) = @_;
-  if($dt->year()<=0) {
+  if($dt->is_infinite) {
+    return $dt->isa('DateTime::Infinite::Future') ? 'infinite' : '-infinite';
+  } elsif($dt->year()<=0) {
     return sprintf('%04d-%02d-%02d %s BC',
       1-$dt->year(),
       $dt->month(),
@@ -785,7 +807,9 @@ result in the server's time zone being used.
 sub format_timestamptz
 {
   my ($self,$dt,%param) = @_;
-  if($dt->year()<=0) {
+  if($dt->is_infinite) {
+    return $dt->isa('DateTime::Infinite::Future') ? 'infinite' : '-infinite';
+  } elsif($dt->year()<=0) {
     return sprintf('%04d-%02d-%02d',
       1-$dt->year(),
       $dt->month(),
@@ -916,6 +940,8 @@ list.  See http://lists.perl.org/ for more details.
 =head1 AUTHOR
 
 Claus A. Färber <perl@faerber.muc.de>
+
+Currently maintained by Daisuke Maki E<lt>dmaki@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
