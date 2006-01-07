@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.14 2005/09/02 21:38:59 lestrrat Exp $
+# $Id: Pg.pm,v 1.16 2006/01/07 00:46:20 lestrrat Exp $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.09';
+$VERSION = '0.10';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -550,23 +550,32 @@ If given an improperly formatted string, this method may die.
 =cut
 
 sub parse_duration {
-  my ($self,$string,%param) = @_;
-
-  # USE_ISO_DATES
-  #
-  if($string =~ m/^(?:(-?\d+) years?)? *(?:([-\+]?\d+) mons?)? *(?:([-\+]?\d+) days?)? *(?:([-\+])?(\d{2,}):(\d{2,})(?::(\d{2,})(\.\d+)?)?)?$/) {
-    my ($year,$mon,$day,$sgn,$hour,$min,$sec,$frc) = ($1,$2,$3,$4,$5,$6,$7,$8);
+    my ($self, $string) = @_;
+    my ($year, $mon, $day, $sgn, $hour, $min, $sec, $frc, $ago) = $string =~ m{
+        \A                                     # Start of string.
+        (?:\@\s*)?                             # Optional leading @.
+        (?:([-+]?\d+)\s+years?\s*)?            # years
+        (?:([-+]?\d+)\s+mons?\s*)?             # months
+        (?:([-+]?\d+)\s+days?\s*)?             # days
+        (?:                                    # Start h/m/s
+          # hours
+          (?:([-+])?([012345]\d(?=:)|\d+(?=\s+hour))(?:\s+hours?)?\s*)?
+          # minutes
+          (?::?((?<=:)[012345]\d|\d+(?=\s+mins?))(?:\s+mins?)?\s*)?
+          # seconds
+          (?::?((?<=:)[012345]\d|\d+(?=\.|\s+secs?))(\.\d+)?(?:\s+secs?)?\s*)?
+        ?)                                     # End hh:mm:ss
+        (ago)?                                 # Optional inversion
+        \z                                     # End of string
+    }xms or croak 'Invalid interval string';
 
     # NB: We can't just pass our values to new() because it treats all
     # arguments as negative if we have a single negative component.
     # PostgreSQL might return mixed signs, e.g. '1 mon -1day'.
-    my $du = DateTime::Duration->new();
+    my $du = DateTime::Duration->new;
 
-    $sec ||= 0;
-    $frc ||= 0;
-    $min ||= 0;
-    $day ||= 0;
-    $mon ||= 0;
+    # Define for calculations
+    $_ ||= 0 for $sec, $frc, $min, $day, $mon;
 
     # DT::Duration only stores years, days, months, seconds (and
     # nanoseconds)
@@ -574,86 +583,22 @@ sub parse_duration {
     $min += 60 * $hour if $hour;
 
     # HH:MM:SS.FFFF share a single sign
-    #
-    $sgn ||= '+';
-    $sgn = $sgn eq '-' ? -1 : 1;
-    $min *= $sgn;
-    $sec *= $sgn;
-    $frc *= $sgn;
-
-    # If the most significant value is negative, set the sign
-    #
-    if($mon<0 || ($mon==0 && ($day<0 || ($day==0 && ($sgn<0 && ($min != 0 || $sec != 0 || $frc != 0)))))) {
-      $du = $du->inverse();
-    }
-
-    # Fractional seconds. Pg can have a maximum precision of 10 decimal
-    # digits, so it's safe to just use floating point arithmetic
-    # (provided we have at least double precision).
-    #
-    $frc *= DateTime::Duration::MAX_NANOSECONDS;
-
-    # One add per sign (PostgreSQL stores, months, days and time with
-    # one sign each)
-    $du -> add( 'months' => $mon ) if $mon;
-    $du -> add( 'days'   => $day ) if $day;
-    $du -> add(
-      ($min ? ( 'minutes'=> $min) : () ),
-      ($sec ? ( 'seconds'=> $sec) : () ),
-      ($frc ? ( 'nanoseconds'=> $frc ) : ()) ) if $min || $sec || $frc;
-
-    return $du;
-  }
-
-  # USE_POSTGRES_DATES (and 'default')
-  #
-  elsif($string =~ m/^@ (?:(-?\d+) years?)? *(?:([-\+]?\d+) mons?)? *(?:([-\+]?\d+) days?)? *(?:([-\+]?\d+) hours?)? *(?:([-\+]?\d+) mins?)? *(?:(([-\+])?\d+)(\.\d+)? secs?)? *(ago)?$/) {
-    my ($year,$mon,$day,$hour,$min,$sec,$sgn,$frc,$ago) = ($1,$2,$3,$4,$5,$6,$7,$8,$9);
-
-    # NB: We can't just pass our values to new() because it treats all
-    # arguments as negative if we have a single negative component.
-    # PostgreSQL might return mixed signs, e.g. '1 mon -1day'.
-    my $du = DateTime::Duration->new();
-
-    # DT::Duration only stores years, days, months, seconds (and
-    # nanoseconds)
-    $mon += 12 * $year if $year;
-    $min += 60 * $hour if $hour;
-
-    # Fractional seconds. Pg can have a maximum precision of 10 decimal
-    # digits, so it's safe to just use floating point arithmetic
-    # (provided we have at least double precision).
-    #
-    if ($frc) {
-      $frc = $sgn.$frc if $sgn;
-      $frc *= DateTime::Duration::MAX_NANOSECONDS;
-    }
-    $frc ||= 0;
-
-    # One add per sign (PostgreSQL stores, months, days and time with
-    # one sign each)
-    $du -> add( 'months' => $mon ) if $mon;
-    $du -> add( 'days'   => $day ) if $day;
-    $du -> add(
-      ($min ? ( 'minutes'=> $min) : () ),
-      ($sec ? ( 'seconds'=> $sec) : () ),
-      ($frc ? ( 'nanoseconds'=> $frc ) : ()) ) if $min || $sec || $frc;
-
-    if($ago) {
-      return $du->inverse();
+    if ($sgn && $sgn eq '-') {
+        $sgn = -1;
+        $_ *= $sgn for $min, $sec, $frc;
     } else {
-      return $du;
+        $sgn = 1;
     }
-  }
 
-  # zero interval
-  #
-  elsif($string =~ m/^\@? *0+ *(ago)?$/) {
-    return DateTime::Duration->new( 'seconds' => 0 );
-  }
-
-  croak 'Invalid input format';
-};
+    $du->add(
+        months      => $mon,
+        days        => $day,
+        minutes     => $min,
+        seconds     => $sec,
+        nanoseconds => $frc * DateTime::Duration::MAX_NANOSECONDS,
+    );
+    return $ago ? $du->inverse : $du;
+}
 
 *parse_interval = \&parse_duration;
 

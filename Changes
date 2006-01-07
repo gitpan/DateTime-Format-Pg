@@ -1,5 +1,8 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.10  Sat Jan 07 09:40:00 2006
+    - Refactor parse_duration() + add tests (David Wheeler)
+
 0.09  Fri Sep 03 06:00:00 2005
     - support infinite, -infinite for parse_timestamp(tz) and format_datetime,
       format_timestamp (Daisuke Maki)
@@ -35,4 +38,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes,v 1.8 2005/09/02 21:38:59 lestrrat Exp $
+$Id: Changes,v 1.9 2006/01/07 00:40:52 lestrrat Exp $
