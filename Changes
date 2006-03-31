@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.11  Sat Apr 01 07:09:00 2006
+    - Fix fractional seconds when formatting DT::Duration to Pg intervals
+      (bug #18487)
+
 0.10  Sat Jan 07 09:40:00 2006
     - Refactor parse_duration() + add tests (David Wheeler)
 
@@ -38,4 +42,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes,v 1.9 2006/01/07 00:40:52 lestrrat Exp $
+$Id: Changes 1060 2006-01-07 00:40:52Z lestrrat $

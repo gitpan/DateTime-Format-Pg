@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm,v 1.16 2006/01/07 00:46:20 lestrrat Exp $
+# $Id: Pg.pm 3403 2006-03-31 22:04:06Z lestrrat $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.10';
+$VERSION = '0.11';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -791,9 +791,9 @@ sub format_duration {
   my $output = '@';
 
   if($deltas{'nanoseconds'}) {
-    $deltas{'seconds'} +=
-      $deltas{'nanoseconds'} /
-      DateTime::Duration::MAX_NANOSECONDS;
+    $deltas{'seconds'} = 
+      sprintf('%f', $deltas{'seconds'} + $deltas{'nanoseconds'} / 
+                                        DateTime::Duration::MAX_NANOSECONDS);
   }
 
   foreach(qw(months days minutes seconds)) {

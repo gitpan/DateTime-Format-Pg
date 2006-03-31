@@ -1,4 +1,4 @@
-# $Id: parse_interval.t,v 1.3 2006/01/07 00:40:52 lestrrat Exp $
+# $Id: parse_interval.t 1060 2006-01-07 00:40:52Z lestrrat $
 use strict;
 use Test::More tests => 30;
 use DateTime;
