@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm 3403 2006-03-31 22:04:06Z lestrrat $
+# $Id: /mirror/DateTime-Format-Pg/lib/DateTime/Format/Pg.pm 1657 2006-07-05T09:05:27.608871Z lestrrat  $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.11';
+$VERSION = '0.12';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
