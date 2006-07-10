@@ -1,5 +1,8 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.13  Mon Jul 10 16:00:00 2006
+    - stupid me cut n' pasted POD tests from other package. yuck.
+
 0.12  Wed Jul 05 18:00:00 2006
     - No code change.
     - Add pod tests.
@@ -46,4 +49,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: /mirror/DateTime-Format-Pg/Changes 1657 2006-07-05T09:05:27.608871Z lestrrat  $
+$Id: /mirror/DateTime-Format-Pg/Changes 1956 2006-07-09T03:50:55.392684Z lestrrat  $

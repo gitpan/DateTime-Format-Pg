@@ -5,10 +5,8 @@ BEGIN {
     eval "use Test::Pod::Coverage";
     if ($@) {
         plan(skip_all => "Test::Pod::Coverage required for testing POD");
-        eval "sub pod_coverage_ok {}";
-    } else {
-        plan(tests    => 1);
+        eval "sub all_pod_coverage_ok {}";
     }
 }
 
-pod_coverage_ok('Text::MeCab', { trustme => [qr{^xs_new$}, qr{^MECAB_[A-Z_]+$}] });
+all_pod_coverage_ok();
