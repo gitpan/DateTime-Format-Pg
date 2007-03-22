@@ -1,4 +1,4 @@
-# $Id: /mirror/DateTime-Format-Pg/t/tz_1901_2038.t 1632 2003-05-30T14:04:49.000000Z cfaerber  $
+# $Id: tz_1901_2038.t 1039 2003-05-30 14:04:49Z cfaerber $
 use Test::More tests => 4;
 use DateTime 0.10;
 use DateTime::TimeZone 0.12;

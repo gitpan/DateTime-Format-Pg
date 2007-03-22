@@ -2,10 +2,13 @@ Changes
 lib/DateTime/Format/Pg.pm
 LICENSE
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
+META.yml
 README
 t/1basic.t
 t/2new-param.t
+t/99-pod-coverage.t
+t/99-pod.t
 t/format_date.t
 t/format_datetime.t
 t/format_interval.t
@@ -15,7 +18,5 @@ t/parse_datetime2.t
 t/parse_infinity.t
 t/parse_interval.t
 t/parse_time.t
+t/self_circle.t
 t/tz_1901_2038.t
-t/99-pod.t
-t/99-pod-coverage.t
-META.yml                                 Module meta-data (added by MakeMaker)

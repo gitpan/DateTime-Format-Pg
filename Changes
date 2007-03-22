@@ -1,5 +1,8 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.14  Thu Mar 22 20:30:00 2007
+    - Fix self circling (format -> parse) (reported by ANDREMAR)
+
 0.13  Mon Jul 10 16:00:00 2006
     - stupid me cut n' pasted POD tests from other package. yuck.
 
@@ -49,4 +52,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: /mirror/DateTime-Format-Pg/Changes 1956 2006-07-09T03:50:55.392684Z lestrrat  $
+$Id: Changes 3644 2007-03-22 11:23:33Z lestrrat $

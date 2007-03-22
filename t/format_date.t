@@ -1,4 +1,4 @@
-# $Id: /mirror/DateTime-Format-Pg/t/format_date.t 1632 2003-05-30T14:04:49.000000Z cfaerber  $
+# $Id: format_date.t 1039 2003-05-30 14:04:49Z cfaerber $
 use Test::More tests => 3;
 use DateTime 0.10;
 use DateTime::Format::Pg 0.02;

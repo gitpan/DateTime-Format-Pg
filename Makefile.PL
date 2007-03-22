@@ -1,5 +1,5 @@
 use ExtUtils::MakeMaker;
-# $Id: /mirror/DateTime-Format-Pg/Makefile.PL 1657 2006-07-05T09:05:27.608871Z lestrrat  $
+# $Id: Makefile.PL 3433 2006-07-05 09:05:27Z lestrrat $
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(

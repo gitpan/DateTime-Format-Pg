@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: /mirror/DateTime-Format-Pg/lib/DateTime/Format/Pg.pm 1956 2006-07-09T03:50:55.392684Z lestrrat  $
+# $Id: Pg.pm 3644 2007-03-22 11:23:33Z lestrrat $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.13';
+$VERSION = '0.14';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -338,8 +338,9 @@ sub _fix_timezone {
 
   # Numerical time zone
   #
-  elsif($args{'parsed'}->{'time_zone'} =~ m/^[-\+]\d+(:\d+)?$/) {
-    $args{'parsed'}->{'time_zone'} .= ':00' unless $1;
+  
+  elsif($args{'parsed'}->{'time_zone'} =~ m/^[-\+](\d+)(:\d+)?$/) {
+    $args{'parsed'}->{'time_zone'} .= ':00' if !$2 && length($1) == 2;
   }
   
   # Non-numerical time zone returned, which can be ambiguous :(
@@ -349,7 +350,7 @@ sub _fix_timezone {
     my $stz = $args{'self'}->_server_tz($args{'args'} ? @{$args{'args'}} : ());
     $args{'parsed'}->{'time_zone'} = $stz || 'floating';
   }
-  
+
   return 1;
 }
 
