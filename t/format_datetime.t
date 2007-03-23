@@ -78,21 +78,21 @@ foreach my $result (keys %tests) {
 
 is(
     DateTime::Format::Pg->format_datetime(DateTime::Infinite::Future->new),
-    'infinite'
+    'infinity'
 );
 
 is(
     DateTime::Format::Pg->format_timestamp(DateTime::Infinite::Future->new),
-    'infinite'
+    'infinity'
 );
 
 is(
     DateTime::Format::Pg->format_datetime(DateTime::Infinite::Past->new),
-    '-infinite'
+    '-infinity'
 );
 
 is(
     DateTime::Format::Pg->format_timestamp(DateTime::Infinite::Past->new),
-    '-infinite'
+    '-infinity'
 );
 

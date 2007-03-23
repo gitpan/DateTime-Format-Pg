@@ -1,7 +1,10 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.15  Fri Mar 23 12:00:00 2007
+    - Fix s/infinite/infinity/g (#25181, reported by Neil Bertram / CFAERBER))
+
 0.14  Thu Mar 22 20:30:00 2007
-    - Fix self circling (format -> parse) (reported by ANDREMAR)
+    - Fix self circling (format -> parse) (#25642, reported by ANDREMAR)
 
 0.13  Mon Jul 10 16:00:00 2006
     - stupid me cut n' pasted POD tests from other package. yuck.

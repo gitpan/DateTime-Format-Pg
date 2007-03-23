@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.14';
+$VERSION = '0.15';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -721,7 +721,7 @@ sub format_timestamp
 {
   my ($self,$dt,%param) = @_;
   if($dt->is_infinite) {
-    return $dt->isa('DateTime::Infinite::Future') ? 'infinite' : '-infinite';
+    return $dt->isa('DateTime::Infinite::Future') ? 'infinity' : '-infinity';
   } elsif($dt->year()<=0) {
     return sprintf('%04d-%02d-%02d %s BC',
       1-$dt->year(),
@@ -754,7 +754,7 @@ sub format_timestamptz
 {
   my ($self,$dt,%param) = @_;
   if($dt->is_infinite) {
-    return $dt->isa('DateTime::Infinite::Future') ? 'infinite' : '-infinite';
+    return $dt->isa('DateTime::Infinite::Future') ? 'infinity' : '-infinity';
   } elsif($dt->year()<=0) {
     return sprintf('%04d-%02d-%02d',
       1-$dt->year(),
