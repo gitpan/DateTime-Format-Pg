@@ -1,15 +1,25 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/parse_interval.t 11072 2007-05-22T00:29:32.567749Z daisuke  $
+# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/parse_interval.t 11394 2007-05-22T11:20:32.433780Z daisuke  $
 use strict;
 use Test::More;
 use DateTime;
 use DateTime::Duration;
 use Data::Dumper;
 
-my @data;
+my @positive_data;
+my @negative_data;
 
 BEGIN
 {
-    @data = (
+    @negative_data = (
+        '098:08:00',
+        '1:08:00',
+        '-012:00:00',
+    );
+
+    @positive_data = (
+        [ '00:00:00' => DateTime::Duration->new() ],
+        [ '-08:08:00' => DateTime::Duration->new( hours => -8, minutes => -8) ],
+        [ '-98:08:00' => DateTime::Duration->new( hours => -98, minutes => -8) ],
         [ '-100:33:00' => DateTime::Duration->new( hours => -100, minutes => -33) ],
         [ '100:33:00' => DateTime::Duration->new( hours => 100, minutes => 33) ],
         [ '01:00:00'  => DateTime::Duration->new( hours => 1 )  ],
@@ -86,15 +96,27 @@ BEGIN
         )],
     );
 
-    plan tests => @data + 1;
+    plan tests => @negative_data + @positive_data + 1;
     use_ok 'DateTime::Format::Pg' or die;
 }
 
-for my $compare (@data) {
-    ok !DateTime::Duration->compare(
-        DateTime::Format::Pg->parse_duration($compare->[0]),
-        $compare->[1]
-    ), "'$compare->[0]'"
-        or diag Dumper {DateTime::Format::Pg->parse_duration($compare->[0])->deltas};
+{ # Positive data
+    for my $compare (@positive_data) {
+        ok !DateTime::Duration->compare(
+            DateTime::Format::Pg->parse_duration($compare->[0]),
+            $compare->[1]
+        ), "'$compare->[0]'"
+            or diag 
+                Dumper [
+                    { DateTime::Format::Pg->parse_duration($compare->[0])->deltas },
+                    { $compare->[1]->deltas }
+                ]
+        ;
+    }
 }
 
+{ # Negative data
+    for my $data (@negative_data) {
+        ok(! eval { DateTime::Format::Pg->parse_duration($data) } && $@, "'$data' fails to parse");
+    }
+}

@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 11072 2007-05-22T00:29:32.567749Z daisuke  $
+# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 11394 2007-05-22T11:20:32.433780Z daisuke  $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16';
+$VERSION = '0.16001';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -560,7 +560,7 @@ sub parse_duration {
         (?:([-+]?\d+)\s+days?\s*)?             # days
         (?:                                    # Start h/m/s
           # hours
-          (?:([-+])?([012345]\d+(?=:)|\d+(?=\s+hour))(?:\s+hours?)?\s*)?
+          (?:([-+])?([0-9]\d|[1-9]\d{2,}(?=:)|\d+(?=\s+hour))(?:\s+hours?)?\s*)?
           # minutes
           (?::?((?<=:)[012345]\d|\d+(?=\s+mins?))(?:\s+mins?)?\s*)?
           # seconds
@@ -568,7 +568,7 @@ sub parse_duration {
         ?)                                     # End hh:mm:ss
         (ago)?                                 # Optional inversion
         \z                                     # End of string
-    }xms or croak 'Invalid interval string';
+    }xms or croak "Invalid interval string $string";
 
     # NB: We can't just pass our values to new() because it treats all
     # arguments as negative if we have a single negative component.
@@ -585,10 +585,7 @@ sub parse_duration {
 
     # HH:MM:SS.FFFF share a single sign
     if ($sgn && $sgn eq '-') {
-        $sgn = -1;
-        $_ *= $sgn for $min, $sec, $frc;
-    } else {
-        $sgn = 1;
+        $_ *= -1 for $min, $sec, $frc;
     }
 
     $du->add(
