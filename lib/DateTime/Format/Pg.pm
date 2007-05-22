@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm 3644 2007-03-22 11:23:33Z lestrrat $
+# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 11072 2007-05-22T00:29:32.567749Z daisuke  $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.15';
+$VERSION = '0.16';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -560,7 +560,7 @@ sub parse_duration {
         (?:([-+]?\d+)\s+days?\s*)?             # days
         (?:                                    # Start h/m/s
           # hours
-          (?:([-+])?([012345]\d(?=:)|\d+(?=\s+hour))(?:\s+hours?)?\s*)?
+          (?:([-+])?([012345]\d+(?=:)|\d+(?=\s+hour))(?:\s+hours?)?\s*)?
           # minutes
           (?::?((?<=:)[012345]\d|\d+(?=\s+mins?))(?:\s+mins?)?\s*)?
           # seconds
@@ -887,11 +887,11 @@ list.  See http://lists.perl.org/ for more details.
 
 Claus A. Färber <perl@faerber.muc.de>
 
-Currently maintained by Daisuke Maki E<lt>dmaki@cpan.orgE<gt>
+Currently maintained by Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
 
 =head1 COPYRIGHT
 
-Copyright © 2003 Claus A. Färber.  All rights reserved.  
+Copyright © 2003 Claus A. Färber. Copyright (c) 2005-2007 Daisuke Maki
 
 This program is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

@@ -1,4 +1,4 @@
-# $Id: format_interval.t 3403 2006-03-31 22:04:06Z lestrrat $
+# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/format_interval.t 10792 2006-03-31T22:04:06.595671Z lestrrat  $
 use Test::More tests => 4;
 use DateTime 0.10;
 use DateTime::Duration;

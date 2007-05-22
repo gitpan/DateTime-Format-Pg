@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.16  Tue May 22 12:00:00 2007
+    - Fix handling of intervals > 99 hours. (#27222, reported by GHENRY)
+    - Migrate to Module::Install
+
 0.15  Fri Mar 23 12:00:00 2007
     - Fix s/infinite/infinity/g (#25181, reported by Neil Bertram / CFAERBER))
 
@@ -55,4 +59,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes 3644 2007-03-22 11:23:33Z lestrrat $
+$Id: /local/datetime/modules/DateTime-Format-Pg/trunk/Changes 11072 2007-05-22T00:29:32.567749Z daisuke  $
