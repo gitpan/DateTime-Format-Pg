@@ -1,4 +1,4 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/parse_datetime.t 8435 2003-07-16T13:42:35.000000Z cfaerber  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/parse_datetime.t 5872 2003-07-16T13:42:35.000000Z cfaerber  $
 use Test::More tests => 8;
 use DateTime::Format::Pg 0.02;
 

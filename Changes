@@ -1,5 +1,10 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.16002  Tue Aug 13 08:00:00 2008
+    - Remove non-ascii byte sequence from Pg.pm (sorry, Claus).
+      This fixes a failure report from CPAN testers
+    - Updated Module::Install while we're at it
+
 0.16001  Tue May 22 21:00:00 2007
     - Attempt to get this right (#27222, reported by GHENRY).
       We now allow two hour digits to contain a preceding zero, but for
@@ -64,4 +69,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: /local/datetime/modules/DateTime-Format-Pg/trunk/Changes 11394 2007-05-22T11:20:32.433780Z daisuke  $
+$Id: /mirror/datetime/DateTime-Format-Pg/trunk/Changes 68454 2008-08-12T23:28:26.498851Z lestrrat  $

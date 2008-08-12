@@ -1,7 +1,5 @@
 Changes
-inc/Module/AutoInstall.pm
 inc/Module/Install.pm
-inc/Module/Install/AutoInstall.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
@@ -10,6 +8,7 @@ inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+inc/Test/More.pm
 lib/DateTime/Format/Pg.pm
 LICENSE
 Makefile.PL
@@ -29,5 +28,7 @@ t/parse_datetime2.t
 t/parse_infinity.t
 t/parse_interval.t
 t/parse_time.t
+t/rt18487.t
+t/rt29635.t
 t/self_circle.t
 t/tz_1901_2038.t

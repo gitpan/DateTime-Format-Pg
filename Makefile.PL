@@ -7,6 +7,9 @@ all_from('lib/DateTime/Format/Pg.pm');
 requires 'DateTime' => '0.10';
 requires 'DateTime::Format::Builder' => '0.72';
 requires 'DateTime::TimeZone' => '0.05';
-auto_install;
+
+test_requires 'Test::More';
+
+auto_include;
 WriteAll;
 

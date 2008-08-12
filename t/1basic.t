@@ -1,4 +1,4 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/1basic.t 8428 2003-05-30T14:04:49.000000Z cfaerber  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/1basic.t 5865 2003-05-30T14:04:49.000000Z cfaerber  $
 use Test::More tests => 3;
 BEGIN { 
   use_ok('DateTime::Format::Pg')

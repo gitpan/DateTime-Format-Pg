@@ -1,4 +1,4 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/format_datetime.t 11034 2007-03-23T03:01:42.879913Z lestrrat  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/format_datetime.t 8449 2007-03-23T03:01:42.879913Z lestrrat  $
 use Test::More tests => 11;
 use DateTime 0.10;
 use DateTime::TimeZone;

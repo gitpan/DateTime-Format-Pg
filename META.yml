@@ -1,8 +1,9 @@
 --- 
 abstract: Parse and format PostgreSQL dates and times
-author: "Claus A. F\xE4rber <perl@faerber.muc.de>"
+author: 
+  - "Claus A. F\xE4rber <perl@faerber.muc.de>"
 distribution_type: module
-generated_by: Module::Install version 0.67
+generated_by: Module::Install version 0.68
 license: perl
 meta-spec: 
   url: http://module-build.sourceforge.net/META-spec-v1.3.html

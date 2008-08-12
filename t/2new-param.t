@@ -1,4 +1,4 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/2new-param.t 8428 2003-05-30T14:04:49.000000Z cfaerber  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/2new-param.t 5865 2003-05-30T14:04:49.000000Z cfaerber  $
 use Test::More tests => 2;
 use DateTime::Format::Pg 0.02;
 

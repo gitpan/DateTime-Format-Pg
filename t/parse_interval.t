@@ -1,4 +1,4 @@
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/t/parse_interval.t 11394 2007-05-22T11:20:32.433780Z daisuke  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/parse_interval.t 8491 2007-05-27T15:32:27.240617Z lestrrat  $
 use strict;
 use Test::More;
 use DateTime;

@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: /local/datetime/modules/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 11394 2007-05-22T11:20:32.433780Z daisuke  $
+# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 68454 2008-08-12T23:28:26.498851Z lestrrat  $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16001';
+$VERSION = '0.16002';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -882,13 +882,13 @@ list.  See http://lists.perl.org/ for more details.
 
 =head1 AUTHOR
 
-Claus A. Färber <perl@faerber.muc.de>
+Claus A. Faerber <perl@faerber.muc.de>
 
 Currently maintained by Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
 
 =head1 COPYRIGHT
 
-Copyright © 2003 Claus A. Färber. Copyright (c) 2005-2007 Daisuke Maki
+Copyright (c) 2003 Claus A. Faerber. Copyright (c) 2005-2007 Daisuke Maki
 
 This program is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
