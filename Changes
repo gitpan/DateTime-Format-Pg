@@ -1,5 +1,8 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.16003  Fri Mar 27 09:30:00 2009
+    - Fix handling of BC (rt #44594). Patch by Jonas Lijegren.
+
 0.16002  Tue Aug 13 08:00:00 2008
     - Remove non-ascii byte sequence from Pg.pm (sorry, Claus).
       This fixes a failure report from CPAN testers
@@ -69,4 +72,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: /mirror/datetime/DateTime-Format-Pg/trunk/Changes 68454 2008-08-12T23:28:26.498851Z lestrrat  $
+$Id: Changes 4148 2009-03-27 00:37:47Z lestrrat $

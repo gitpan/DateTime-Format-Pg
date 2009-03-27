@@ -10,6 +10,5 @@ requires 'DateTime::TimeZone' => '0.05';
 
 test_requires 'Test::More';
 
-auto_include;
 WriteAll;
 

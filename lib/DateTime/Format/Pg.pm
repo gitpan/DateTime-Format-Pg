@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/lib/DateTime/Format/Pg.pm 68454 2008-08-12T23:28:26.498851Z lestrrat  $
+# $Id: Pg.pm 4148 2009-03-27 00:37:47Z lestrrat $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16002';
+$VERSION = '0.16003';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -226,8 +226,8 @@ my $pg_timeonly =
 #
 my $pg_datetime_iso =
 {
-  regex		=> qr/^(\d{4,})-(\d{2,})-(\d{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *([-\+][\d:]+)?$/,
-  params 	=> [ qw( year    month    day      hour     minute  second nanosecond era    time_zone) ],
+  regex		=> qr/^(\d{4,})-(\d{2,})-(\d{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? *([-\+][\d:]+)?( BC)?$/,
+  params 	=> [ qw( year    month    day      hour     minute  second nanosecond time_zone       era) ],
   postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
@@ -235,8 +235,8 @@ my $pg_datetime_iso =
 #
 my $pg_datetime_pg_eu =
 {
-  regex		=> qr/^\S{3,} (\d{2,}) (\S{3,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw(       day      month    hour     minute  second nanosecond year    era     time_zone) ],
+  regex		=> qr/^\S{3,} (\d{2,}) (\S{3,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,}) *((?:[-\+][\d:]+)|(?:\S+))?( BC)?$/,
+  params 	=> [ qw(       day      month    hour     minute  second nanosecond year      time_zone                 era ) ],
   postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
@@ -244,8 +244,8 @@ my $pg_datetime_pg_eu =
 #
 my $pg_datetime_pg_us =
 {
-  regex		=> qr/^\S{3,} (\S{3,}) (\s{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,})( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw(       month    day      hour     minute  second nanosecond year    era     time_zone) ],
+  regex		=> qr/^\S{3,} (\S{3,}) (\s{2,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? (\d{4,}) *((?:[-\+][\d:]+)|(?:\S+))?( BC)?$/,
+  params 	=> [ qw(       month    day      hour     minute  second nanosecond year     time_zone                 era ) ],
   postprocess 	=> [ \&_fix_era, \&_fix_month_names, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
@@ -254,8 +254,8 @@ my $pg_datetime_pg_us =
 #
 my $pg_datetime_sql =
 {
-  regex		=> qr/^(\d{2,})\/(\d{2,})\/(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw( month    day       year    hour     minute   second nanosecond era      time_zone) ],
+  regex		=> qr/^(\d{2,})\/(\d{2,})\/(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? *((?:[-\+][\d:]+)|(?:\S+))?( BC)?$/,
+  params 	=> [ qw( month    day       year    hour     minute   second nanosecond    time_zone               era ) ],
   postprocess 	=> [ \&_fix_era, \&_fix_eu, \&_fix_timezone, \&_fix_nanosecond ],
 };
 
@@ -263,8 +263,8 @@ my $pg_datetime_sql =
 #
 my $pg_datetime_german =
 {
-  regex		=> qr/^(\d{2,})\.(\d{2,})\.(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)?( BC)? *((?:[-\+][\d:]+)|(?:\S+))?$/,
-  params 	=> [ qw( day      month     year    hour     minute   second nanosecond era    time_zone) ],
+  regex		=> qr/^(\d{2,})\.(\d{2,})\.(\d{4,}) (\d{2,}):(\d{2,}):(\d{2,})(\.\d+)? *((?:[-\+][\d:]+)|(?:\S+))?( BC)?$/,
+  params 	=> [ qw( day      month     year    hour     minute   second nanosecond time_zone                 era ) ],
   postprocess 	=> [ \&_fix_era, \&_fix_timezone, \&_fix_nanosecond ],
 };
 

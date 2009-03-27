@@ -3,12 +3,10 @@ inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
-inc/Module/Install/Include.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
-inc/Test/More.pm
 lib/DateTime/Format/Pg.pm
 LICENSE
 Makefile.PL
@@ -25,6 +23,7 @@ t/format_interval.t
 t/parse_date.t
 t/parse_datetime.t
 t/parse_datetime2.t
+t/parse_datetime3.t
 t/parse_infinity.t
 t/parse_interval.t
 t/parse_time.t

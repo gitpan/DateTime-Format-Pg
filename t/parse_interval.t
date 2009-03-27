@@ -1,4 +1,4 @@
-# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/parse_interval.t 8491 2007-05-27T15:32:27.240617Z lestrrat  $
+# $Id: parse_interval.t 3687 2007-05-27 15:32:27Z lestrrat $
 use strict;
 use Test::More;
 use DateTime;

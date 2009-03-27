@@ -1,4 +1,4 @@
-# $Id: /mirror/datetime/DateTime-Format-Pg/trunk/t/parse_date.t 5865 2003-05-30T14:04:49.000000Z cfaerber  $
+# $Id: parse_date.t 1039 2003-05-30 14:04:49Z cfaerber $
 use Test::More tests => 18;
 use DateTime 0.10;
 use DateTime::TimeZone 0.12;
