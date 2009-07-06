@@ -1,5 +1,8 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.16004  Mon Jul 06 12:00:00 2009
+    - Ship with proper META.yml (rt #47604)
+
 0.16003  Fri Mar 27 09:30:00 2009
     - Fix handling of BC (rt #44594). Patch by Jonas Lijegren.
 

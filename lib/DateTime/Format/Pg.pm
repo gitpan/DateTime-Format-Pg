@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16003';
+$VERSION = '0.16004';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -882,9 +882,11 @@ list.  See http://lists.perl.org/ for more details.
 
 =head1 AUTHOR
 
-Claus A. Faerber <perl@faerber.muc.de>
+Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
 
-Currently maintained by Daisuke Maki E<lt>daisuke@endeworks.jpE<gt>
+=head1 AUTHOR EMERITUS 
+
+Claus A. Faerber <perl@faerber.muc.de>
 
 =head1 COPYRIGHT
 
