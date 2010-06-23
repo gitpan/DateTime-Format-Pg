@@ -1,5 +1,5 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm 4148 2009-03-27 00:37:47Z lestrrat $
+# $Id: Pg.pm 4436 2010-06-23 03:14:18Z lestrrat $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +12,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16004';
+$VERSION = '0.16005';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -640,7 +640,7 @@ will contain the local time of the C<DateTime> object and no time zone.
 sub _format_fractional
 {
   my $ns = shift->nanosecond;
-  return $ns ? sprintf(".%09d", $ns) : ''
+  return $ns ? sprintf(".%09d", "$ns") : ''
 }
 
 sub format_time

@@ -20,6 +20,7 @@ t/99-pod.t
 t/format_date.t
 t/format_datetime.t
 t/format_interval.t
+t/format_fractional.t
 t/parse_date.t
 t/parse_datetime.t
 t/parse_datetime2.t

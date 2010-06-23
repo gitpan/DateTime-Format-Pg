@@ -1,5 +1,9 @@
 Revision history for Perl extension DateTime::Format::Pg.
 
+0.16005  Wed Jun 23 12:15:00 2010
+    - Fix edge case in fractional seconds (rt #58612).
+      Patch by Andrew Whatson
+
 0.16004  Mon Jul 06 12:00:00 2009
     - Ship with proper META.yml (rt #47604)
 
@@ -75,4 +79,4 @@ Revision history for Perl extension DateTime::Format::Pg.
 	- original version; created by h2xs 1.22 with options
 		-X -n DateTime::Format::Pg
 
-$Id: Changes 4148 2009-03-27 00:37:47Z lestrrat $
+$Id: Changes 4436 2010-06-23 03:14:18Z lestrrat $
