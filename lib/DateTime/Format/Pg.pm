@@ -1,5 +1,4 @@
 package DateTime::Format::Pg;
-# $Id: Pg.pm 4436 2010-06-23 03:14:18Z lestrrat $
 
 use strict;
 use vars qw ($VERSION);
@@ -12,7 +11,7 @@ use DateTime::TimeZone 0.06;
 use DateTime::TimeZone::UTC;
 use DateTime::TimeZone::Floating;
 
-$VERSION = '0.16005';
+$VERSION = '0.16006';
 $VERSION = eval $VERSION;
 
 our @ISA = ('DateTime::Format::Builder');
@@ -373,7 +372,7 @@ DateTime::Format::Builder->create_class
   parsers =>
   {
     parse_date		=> [ $pg_dateonly_iso, $pg_dateonly_sql,
-    			     $pg_dateonly_german, ],
+    			     $pg_dateonly_german, $pg_infinity ],
     parse_timetz	=> [ $pg_timeonly, ],
     parse_timestamptz	=> [ $pg_datetime_iso, $pg_datetime_pg_eu,
                              $pg_datetime_pg_us, $pg_datetime_sql,
@@ -693,7 +692,9 @@ C<DateTime> object.
 sub format_date
 {
   my ($self,$dt) = @_;
-  if($dt->year()<=0) {
+  if($dt->is_infinite) {
+    return $dt->isa('DateTime::Infinite::Future') ? 'infinity' : '-infinity';
+  } elsif($dt->year()<=0) {
     return sprintf('%04d-%02d-%02d BC',
       1-$dt->year(),
       $dt->month(),

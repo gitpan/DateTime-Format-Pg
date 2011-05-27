@@ -8,7 +8,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 1.00'
+generated_by: 'Module::Install version 1.01'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -24,4 +24,5 @@ requires:
   DateTime::TimeZone: 0.05
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.16005
+  repository: git://github.com/lestrrat/DateTime-Format-Pg.git
+version: 0.16006
