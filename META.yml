@@ -25,4 +25,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/lestrrat/DateTime-Format-Pg.git
-version: 0.16006
+version: 0.16007
