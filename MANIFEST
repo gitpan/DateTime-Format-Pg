@@ -25,10 +25,12 @@ t/parse_date.t
 t/parse_datetime.t
 t/parse_datetime2.t
 t/parse_datetime3.t
+t/parse_datetime4.t
 t/parse_infinity.t
 t/parse_interval.t
 t/parse_time.t
 t/rt18487.t
 t/rt29635.t
+t/rt72706.t
 t/self_circle.t
 t/tz_1901_2038.t
