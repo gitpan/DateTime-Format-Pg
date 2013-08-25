@@ -1,18 +1,11 @@
+Build.PL
 Changes
-inc/Module/Install.pm
-inc/Module/Install/Base.pm
-inc/Module/Install/Can.pm
-inc/Module/Install/Fetch.pm
-inc/Module/Install/Makefile.pm
-inc/Module/Install/Metadata.pm
-inc/Module/Install/Repository.pm
-inc/Module/Install/Win32.pm
-inc/Module/Install/WriteAll.pm
-lib/DateTime/Format/Pg.pm
 LICENSE
-Makefile.PL
-MANIFEST			This list of files
-META.yml
+META.json
+Makefile
+README.md
+cpanfile
+lib/DateTime/Format/Pg.pm
 t/1basic.t
 t/2new-param.t
 t/99-pod-coverage.t
@@ -34,3 +27,5 @@ t/rt29635.t
 t/rt72706.t
 t/self_circle.t
 t/tz_1901_2038.t
+META.yml
+MANIFEST
